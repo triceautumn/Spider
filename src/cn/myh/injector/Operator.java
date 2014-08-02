@@ -1,4 +1,4 @@
-package GUI;
+package cn.myh.injector;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,14 +14,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-
 import javax.swing.WindowConstants;
 import javax.swing.SwingUtilities;
 
-import injector.*;
-import fetchList.*;
-import fetch.*;
-import view.showDb;
+import cn.myh.injector.*;
+import cn.myh.operator.Injector;
+import cn.myh.fetchList.*;
+import cn.myh.fetch.*;
+import cn.myh.view.ShowDb;
 
 
 /**
@@ -36,7 +36,7 @@ import view.showDb;
 * THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
-public class gui extends javax.swing.JFrame {
+public class Operator extends javax.swing.JFrame {
 
 	{
 		//Set Look & Feel
@@ -71,14 +71,14 @@ public class gui extends javax.swing.JFrame {
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				gui inst = new gui();
+				Operator inst = new Operator();
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
 		});
 	}
 	
-	public gui() {
+	public Operator() {
 		super();
 		initGUI();
 	}
@@ -184,7 +184,7 @@ public class gui extends javax.swing.JFrame {
 				bw.flush();
 				bw.close();
 				fw.close();
-				injector i=new injector();
+				Injector i=new Injector();
 				long in;
 				if(interval.getText().equals(""))
 					in=3600*24*1000;
@@ -205,7 +205,7 @@ public class gui extends javax.swing.JFrame {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
-			generator gen=new generator();
+			Generator gen=new Generator();
 			try {
 				gen.generate();
 			} catch (IOException e1) {
@@ -224,7 +224,7 @@ public class gui extends javax.swing.JFrame {
 				d=0;
 			else
 				d=Integer.parseInt(depth.getText());
-			fetching f=new fetching();
+			Fetching f=new Fetching();
 			try {
 				f.fetch(d);
 				depth.setText("");
@@ -240,7 +240,7 @@ public class gui extends javax.swing.JFrame {
 		public void actionPerformed(ActionEvent e) {
 			// TODO Auto-generated method stub
 			String path=System.getProperty("user.dir")+"/crawl/dbviewer/part-00000";
-			showDb show=new showDb();
+			ShowDb show=new ShowDb();
 			try {
 				show.show();
 				FileReader fd=new FileReader(path);

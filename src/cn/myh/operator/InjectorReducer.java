@@ -1,4 +1,4 @@
-package injector;
+package cn.myh.operator;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,22 +9,22 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class injectorReduce extends MapReduceBase 
-	implements Reducer<Text, url_data, Text, url_data> {
+public class InjectorReducer extends MapReduceBase 
+	implements Reducer<Text, UrlData, Text, UrlData> {
 
-	public void reduce(Text _key, Iterator<url_data> values,
-			OutputCollector<Text, url_data> output, Reporter reporter) throws IOException {
+	public void reduce(Text _key, Iterator<UrlData> values,
+			OutputCollector<Text, UrlData> output, Reporter reporter) throws IOException {
 		// replace KeyType with the real type of your key
 		Text key = (Text) _key;
-		url_data newdata=new url_data();
+		UrlData newdata=new UrlData();
 		while (values.hasNext()) {
 			// replace ValueType with the real type of your value
-			url_data value = values.next();
-			if(value.getStatus()==url_data.STATUS_INJECTED) {
+			UrlData value = values.next();
+			if(value.getStatus()==UrlData.STATUS_INJECTED) {
 				newdata.set(value);
-				newdata.setStatus(url_data.STATUS_DB_UNFETCHED);
+				newdata.setStatus(UrlData.STATUS_DB_UNFETCHED);
 			}
 		}
 		output.collect(key, newdata);

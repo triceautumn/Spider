@@ -1,4 +1,4 @@
-package fetchList;
+package cn.myh.fetchList;
 
 import java.io.IOException;
 
@@ -12,19 +12,19 @@ import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class generator {
+public class Generator {
 	public void generate() throws IOException {
 		JobClient client = new JobClient();
-		JobConf conf = new JobConf(fetchList.generator.class);
+		JobConf conf = new JobConf(Generator.class);
 
 		String currentPath=System.getProperty("user.dir");
 		Path in=new Path(currentPath+"/crawl/db");
 		Path out=new Path(currentPath+"/crawl/fetch_list");
 		// TODO: specify output types
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 
 		// TODO: specify input and output DIRECTORIES (not files)
 		conf.setInputFormat(SequenceFileInputFormat.class);
@@ -39,10 +39,10 @@ public class generator {
 		FileOutputFormat.setOutputPath(conf, out);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(genMap.class);
+		conf.setMapperClass(GenMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(genReduce.class);
+		conf.setReducerClass(GenReducer.class);
 
 		client.setConf(conf);
 		try {
@@ -54,14 +54,14 @@ public class generator {
 
 	public static void main(String[] args) throws IOException {
 		JobClient client = new JobClient();
-		JobConf conf = new JobConf(fetchList.generator.class);
+		JobConf conf = new JobConf(Generator.class);
 
 		String currentPath=System.getProperty("user.dir");
 		Path in=new Path(currentPath+"/crawl/db");
 		Path out=new Path(currentPath+"/crawl/fetch_list");
 		// TODO: specify output types
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 
 		// TODO: specify input and output DIRECTORIES (not files)
 		conf.setInputFormat(SequenceFileInputFormat.class);
@@ -76,10 +76,10 @@ public class generator {
 		FileOutputFormat.setOutputPath(conf, out);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(genMap.class);
+		conf.setMapperClass(GenMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(genReduce.class);
+		conf.setReducerClass(GenReducer.class);
 
 		client.setConf(conf);
 		try {

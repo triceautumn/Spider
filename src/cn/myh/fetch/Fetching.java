@@ -1,4 +1,4 @@
-package fetch;
+package cn.myh.fetch;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -20,29 +20,30 @@ import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class fetching implements Mapper<Text, url_data, Text, url_data>
-	, Reducer<Text, url_data, Text, url_data>{
+
+public class Fetching implements Mapper<Text, UrlData, Text, UrlData>
+	, Reducer<Text, UrlData, Text, UrlData>{
 		
 		ArrayList<String> urls=new ArrayList<String>();
 		
 	@Override
-	public void map(Text arg0, url_data arg1,
-			OutputCollector<Text, url_data> arg2, Reporter arg3)
+	public void map(Text arg0, UrlData arg1,
+			OutputCollector<Text, UrlData> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
-		if(arg1.getStatus()==url_data.STATUS_DB_UNFETCHED) {
-			arg1.setStatus(url_data.STATUS_DB_READYTOFETCH);
+		if(arg1.getStatus()==UrlData.STATUS_DB_UNFETCHED) {
+			arg1.setStatus(UrlData.STATUS_DB_READYTOFETCH);
 			arg2.collect(arg0, arg1);
 			urls=HerfMatch.FindURL(arg0.toString());
 			if(urls==null)
 				return;
 			for(int i=0;i<urls.size();i++) {
-				url_data tmp=new url_data();
+				UrlData tmp=new UrlData();
 				String url=urls.get(i);
 				tmp.set(arg1);
-				tmp.setStatus(url_data.STATUS_DB_UNFETCHED);
+				tmp.setStatus(UrlData.STATUS_DB_UNFETCHED);
 				tmp.setlastFetchTime(System.currentTimeMillis());
 				arg2.collect(new Text(url), tmp);
 			}
@@ -63,11 +64,11 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 	}
 
 	@Override
-	public void reduce(Text arg0, Iterator<url_data> arg1,
-			OutputCollector<Text, url_data> arg2, Reporter arg3)
+	public void reduce(Text arg0, Iterator<UrlData> arg1,
+			OutputCollector<Text, UrlData> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
-		url_data data=new url_data();
+		UrlData data=new UrlData();
 		while(arg1.hasNext()) {
 			data.set(arg1.next());
 		}
@@ -82,7 +83,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 	public void fetch(int d) throws IOException {
 		int depth=d;
 		JobClient client=new JobClient();
-		JobConf conf=new JobConf(fetching.class);
+		JobConf conf=new JobConf(Fetching.class);
 		/***
 		 * 第一个map-reduce程序，存储结果首先放在在tmp，最后tmp修改名称为db，将DB中的url的data的标志修改为STATUS_DB_FETCHED
 		 */
@@ -94,7 +95,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		Path stored=new Path(current+"/stored_web/"+new Date(System.currentTimeMillis()));
 		//设置reduce的输出格式
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		//设置任务的输入格式
 		conf.setInputFormat(SequenceFileInputFormat.class);
@@ -123,8 +124,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		FileOutputFormat.setOutputPath(conf, tmp);
 		
 		//设置Mapper，默认为IdentityMapper 
-		conf.setMapperClass(update.class);
-		conf.setReducerClass(update.class);
+		conf.setMapperClass(Update.class);
+		conf.setReducerClass(Update.class);
 		
 		client.setConf(conf);
 		try {
@@ -142,12 +143,12 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 	 * 第二个map-reduce程序，爬取深度为depth的从fetchlist中读取，最后仍填写在fetchlist中
 	 */
 		for(int i=0;i<depth;i++) {
-			conf=new JobConf(fetching.class);
+			conf=new JobConf(Fetching.class);
 			conf.setJobName("updating fetch list");
 			
 			//设置Reducer的输出的key-value对的格式 
 			conf.setOutputKeyClass(Text.class);
-			conf.setOutputValueClass(url_data.class);
+			conf.setOutputValueClass(UrlData.class);
 			
 			conf.setInputFormat(SequenceFileInputFormat.class);
 			conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -158,8 +159,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 			
 			FileOutputFormat.setOutputPath(conf, tmp);
 			
-			conf.setMapperClass(fetching.class);
-			conf.setReducerClass(fetching.class);
+			conf.setMapperClass(Fetching.class);
+			conf.setReducerClass(Fetching.class);
 			
 			client.setConf(conf);
 			try {
@@ -172,7 +173,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 			}
 		}
 		
-		conf=new JobConf(fetching.class);
+		conf=new JobConf(Fetching.class);
 		conf.setJobName("crawling...");
 		
 		conf.setOutputKeyClass(Text.class);
@@ -185,8 +186,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		FileInputFormat.setInputPaths(conf, fetchlist);
 		FileOutputFormat.setOutputPath(conf, stored);
 		
-		conf.setMapperClass(view.class);
-		conf.setReducerClass(view.class);
+		conf.setMapperClass(View.class);
+		conf.setReducerClass(View.class);
 		
 		client.setConf(conf);
 		try {
@@ -202,7 +203,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		// TODO Auto-generated method stub
 		int depth=3;
 		JobClient client=new JobClient();
-		JobConf conf=new JobConf(fetching.class);
+		JobConf conf=new JobConf(Fetching.class);
 		conf.setJobName("updating db");
 		
 		String current=System.getProperty("user.dir")+"/crawl";
@@ -212,7 +213,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		Path stored=new Path(current+"/stored_web/"+new Date(System.currentTimeMillis()));
 		
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(SequenceFileInputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -228,8 +229,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 			FileSystem.get(conf).delete(tmp, true);
 		FileOutputFormat.setOutputPath(conf, tmp);
 		
-		conf.setMapperClass(update.class);
-		conf.setReducerClass(update.class);
+		conf.setMapperClass(Update.class);
+		conf.setReducerClass(Update.class);
 		
 		client.setConf(conf);
 		try {
@@ -242,10 +243,10 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		}
 		
 		for(int i=0;i<depth;i++) {
-			conf=new JobConf(fetching.class);
+			conf=new JobConf(Fetching.class);
 			conf.setJobName("updating fetch list");
 			conf.setOutputKeyClass(Text.class);
-			conf.setOutputValueClass(url_data.class);
+			conf.setOutputValueClass(UrlData.class);
 			
 			conf.setInputFormat(SequenceFileInputFormat.class);
 			conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -255,8 +256,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 				FileSystem.get(conf).delete(tmp, true);
 			FileOutputFormat.setOutputPath(conf, tmp);
 			
-			conf.setMapperClass(fetching.class);
-			conf.setReducerClass(fetching.class);
+			conf.setMapperClass(Fetching.class);
+			conf.setReducerClass(Fetching.class);
 			
 			client.setConf(conf);
 			try {
@@ -269,7 +270,7 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 			}
 		}
 		
-		conf=new JobConf(fetching.class);
+		conf=new JobConf(Fetching.class);
 		conf.setJobName("crawling...");
 		
 		conf.setOutputKeyClass(Text.class);
@@ -281,8 +282,8 @@ public class fetching implements Mapper<Text, url_data, Text, url_data>
 		FileInputFormat.setInputPaths(conf, fetchlist);
 		FileOutputFormat.setOutputPath(conf, stored);
 		
-		conf.setMapperClass(view.class);
-		conf.setReducerClass(view.class);
+		conf.setMapperClass(View.class);
+		conf.setReducerClass(View.class);
 		
 		client.setConf(conf);
 		try {

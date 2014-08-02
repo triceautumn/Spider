@@ -1,4 +1,4 @@
-package fetchList;
+package cn.myh.fetchList;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,20 +9,20 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class genReduce extends MapReduceBase implements 
-	Reducer<Text, url_data, Text, url_data> {
+public class GenReducer extends MapReduceBase implements 
+	Reducer<Text, UrlData, Text, UrlData> {
 
 	@Override
-	public void reduce(Text arg0, Iterator<url_data> arg1,
-			OutputCollector<Text, url_data> arg2, Reporter arg3)
+	public void reduce(Text arg0, Iterator<UrlData> arg1,
+			OutputCollector<Text, UrlData> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
-		url_data data=new url_data();
+		UrlData data=new UrlData();
 		long recent=0;
 		while(arg1.hasNext()) {
-			url_data tmp=new url_data();
+			UrlData tmp=new UrlData();
 			tmp.set(arg1.next());
 			if(recent<tmp.getlastFetchTime()) {
 				recent=tmp.getlastFetchTime();

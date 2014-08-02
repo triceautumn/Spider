@@ -1,4 +1,4 @@
-package view;
+package cn.myh.view;
 
 import java.io.IOException;
 
@@ -16,14 +16,14 @@ import org.apache.hadoop.mapred.Reporter;
 import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.TextOutputFormat;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class showDb extends MapReduceBase implements 
-	Mapper<Text, url_data, Text, url_data>{
+public class ShowDb extends MapReduceBase implements 
+	Mapper<Text, UrlData, Text, UrlData>{
 
 	@Override
-	public void map(Text arg0, url_data arg1,
-			OutputCollector<Text, url_data> arg2, Reporter arg3)
+	public void map(Text arg0, UrlData arg1,
+			OutputCollector<Text, UrlData> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
 		arg2.collect(arg0, arg1);
@@ -31,14 +31,14 @@ public class showDb extends MapReduceBase implements
 	
 	public void show() throws IOException {
 		JobClient client=new JobClient();
-		JobConf conf =new JobConf(showDb.class);
+		JobConf conf =new JobConf(ShowDb.class);
 		
 		String current=System.getProperty("user.dir")+"/crawl";
 		Path db=new Path(current+"/db");
 		Path view=new Path(current+"/dbviewer");
 		
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(SequenceFileInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);
@@ -48,7 +48,7 @@ public class showDb extends MapReduceBase implements
 			FileSystem.get(conf).delete(view, true);
 		FileOutputFormat.setOutputPath(conf, view);
 		
-		conf.setMapperClass(showDb.class);
+		conf.setMapperClass(ShowDb.class);
 		
 		client.setConf(conf);
 		try {
@@ -60,14 +60,14 @@ public class showDb extends MapReduceBase implements
 	
 	public static void main(String [] args) throws IOException {
 		JobClient client=new JobClient();
-		JobConf conf =new JobConf(showDb.class);
+		JobConf conf =new JobConf(ShowDb.class);
 		
 		String current=System.getProperty("user.dir")+"/crawl";
 		Path db=new Path(current+"/db");
 		Path view=new Path(current+"/dbviewer");
 		
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(SequenceFileInputFormat.class);
 		conf.setOutputFormat(TextOutputFormat.class);
@@ -77,7 +77,7 @@ public class showDb extends MapReduceBase implements
 			FileSystem.get(conf).delete(view, true);
 		FileOutputFormat.setOutputPath(conf, view);
 		
-		conf.setMapperClass(showDb.class);
+		conf.setMapperClass(ShowDb.class);
 		
 		client.setConf(conf);
 		try {

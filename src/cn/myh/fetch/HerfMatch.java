@@ -1,4 +1,4 @@
-package fetch;
+package cn.myh.fetch;
 
 import java.io.*;
 import java.net.*;
@@ -9,7 +9,7 @@ public class HerfMatch
 {
    public static void main(String[] args)
    {
-	   String urlString = "http://www.sjtu.edu.cn";
+	   String urlString = "http://www.sohu.com";
 	   /*ArrayList<String> urls = new ArrayList<String>();
 	   urls = FindURL(urlString);
 	   for(int i=0;i<urls.size();i++){

@@ -1,4 +1,4 @@
-package injector;
+package cn.myh.operator;
 
 import java.io.IOException;
 
@@ -10,17 +10,17 @@ import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reporter;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class injectorMap extends MapReduceBase 
-	implements Mapper<WritableComparable, Text, Text, url_data> {
+public class InjectorMapper extends MapReduceBase 
+	implements Mapper<WritableComparable, Text, Text, UrlData> {
 		long interval;
 
 	public void map(WritableComparable key, Text values,
-			OutputCollector<Text, url_data> output, Reporter reporter) throws IOException {
+			OutputCollector<Text, UrlData> output, Reporter reporter) throws IOException {
 		String url=values.toString();
 		if(url!=null) {
-			url_data data=new url_data(url_data.STATUS_INJECTED);
+			UrlData data=new UrlData(UrlData.STATUS_INJECTED);
 			data.setFetchInterval(this.interval);
 			values.set(url);
 			output.collect(values, data);

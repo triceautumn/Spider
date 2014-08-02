@@ -1,4 +1,4 @@
-package injector;
+package cn.myh.operator;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -9,21 +9,21 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class updateReduce extends MapReduceBase 
-	implements Reducer<Text, url_data, Text, url_data> {
+public class UpdateReducer extends MapReduceBase 
+	implements Reducer<Text, UrlData, Text, UrlData> {
 
 	@Override
-	public void reduce(Text arg0, Iterator<url_data> arg1,
-			OutputCollector<Text, url_data> arg2, Reporter arg3)
+	public void reduce(Text arg0, Iterator<UrlData> arg1,
+			OutputCollector<Text, UrlData> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
-		url_data old=new url_data();
-		url_data newd=new url_data();
+		UrlData old=new UrlData();
+		UrlData newd=new UrlData();
 		while(arg1.hasNext()) {
-			url_data ud=arg1.next();
-			if(ud.getStatus()==url_data.STATUS_DB_FETCHED) {
+			UrlData ud=arg1.next();
+			if(ud.getStatus()==UrlData.STATUS_DB_FETCHED) {
 				old.set(ud);
 				break;
 			}else {
@@ -34,7 +34,7 @@ public class updateReduce extends MapReduceBase
 		if(old.getStatus()!=0)
 			arg2.collect(arg0, old);
 		else {
-			newd.setStatus(url_data.STATUS_DB_UNFETCHED);
+			newd.setStatus(UrlData.STATUS_DB_UNFETCHED);
 			arg2.collect(arg0, newd);
 		}
 	}

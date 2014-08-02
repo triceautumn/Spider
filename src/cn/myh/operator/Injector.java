@@ -1,4 +1,4 @@
-package injector;
+package cn.myh.operator;
 
 import java.io.IOException;
 
@@ -13,13 +13,13 @@ import org.apache.hadoop.mapred.SequenceFileInputFormat;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.hadoop.mapred.TextInputFormat;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class injector {
+public class Injector {
 	public void inject(long interval) throws IOException {
 		String currentPath=System.getProperty("user.dir");
 		JobClient client = new JobClient();
-		JobConf conf = new JobConf(injector.class);
+		JobConf conf = new JobConf(Injector.class);
 		
 		Path dbpath=new Path(currentPath+"/crawl/db");
 		Path tmppath=new Path(currentPath+"/crawl/new");
@@ -29,7 +29,7 @@ public class injector {
 		conf.setLong("interval", interval);
 		// TODO: specify output types
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(TextInputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -45,10 +45,10 @@ public class injector {
 		FileOutputFormat.setOutputPath(conf, inject);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(injectorMap.class);
+		conf.setMapperClass(InjectorMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(injectorReduce.class);
+		conf.setReducerClass(InjectorReducer.class);
 
 		client.setConf(conf);
 		try {
@@ -57,9 +57,9 @@ public class injector {
 			e.printStackTrace();
 		}
 		
-		conf=new JobConf(injector.class);
+		conf=new JobConf(Injector.class);
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(SequenceFileInputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -74,10 +74,10 @@ public class injector {
 		FileOutputFormat.setOutputPath(conf, tmppath);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(updateMap.class);
+		conf.setMapperClass(UpdateMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(updateReduce.class);
+		conf.setReducerClass(UpdateReducer.class);
 
 		client.setConf(conf);
 		try {
@@ -98,7 +98,7 @@ public class injector {
 	public static void main(String[] args) throws IOException {
 		String currentPath=System.getProperty("user.dir");
 		JobClient client = new JobClient();
-		JobConf conf = new JobConf(injector.class);
+		JobConf conf = new JobConf(Injector.class);
 		
 		Path dbpath=new Path(currentPath+"/crawl/db");
 		Path tmppath=new Path(currentPath+"/crawl/new");
@@ -107,7 +107,7 @@ public class injector {
 
 		// TODO: specify output types
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(TextInputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -121,10 +121,10 @@ public class injector {
 		FileOutputFormat.setOutputPath(conf, inject);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(injectorMap.class);
+		conf.setMapperClass(InjectorMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(injectorReduce.class);
+		conf.setReducerClass(InjectorReducer.class);
 
 		client.setConf(conf);
 		try {
@@ -133,9 +133,9 @@ public class injector {
 			e.printStackTrace();
 		}
 		
-		conf=new JobConf(injector.class);
+		conf=new JobConf(Injector.class);
 		conf.setOutputKeyClass(Text.class);
-		conf.setOutputValueClass(url_data.class);
+		conf.setOutputValueClass(UrlData.class);
 		
 		conf.setInputFormat(SequenceFileInputFormat.class);
 		conf.setOutputFormat(SequenceFileOutputFormat.class);
@@ -150,10 +150,10 @@ public class injector {
 		FileOutputFormat.setOutputPath(conf, tmppath);
 
 		// TODO: specify a mapper
-		conf.setMapperClass(updateMap.class);
+		conf.setMapperClass(UpdateMapper.class);
 
 		// TODO: specify a reducer
-		conf.setReducerClass(updateReduce.class);
+		conf.setReducerClass(UpdateReducer.class);
 
 		client.setConf(conf);
 		try {

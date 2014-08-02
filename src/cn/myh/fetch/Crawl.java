@@ -1,4 +1,4 @@
-package fetch;
+package cn.myh.fetch;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -10,13 +10,15 @@ import org.apache.hadoop.mapred.OutputCollector;
 import org.apache.hadoop.mapred.Reducer;
 import org.apache.hadoop.mapred.Reporter;
 
-import data_structure.url_data;
+import cn.myh.bean.UrlData;
 
-public class crawl extends MapReduceBase implements 
-	Mapper<Text, url_data, Text, Text>, Reducer<Text, Text, Text, Text> {
+
+
+public class Crawl extends MapReduceBase implements 
+	Mapper<Text, UrlData, Text, Text>, Reducer<Text, Text, Text, Text> {
 
 	@Override
-	public void map(Text arg0, url_data arg1,
+	public void map(Text arg0, UrlData arg1,
 			OutputCollector<Text, Text> arg2, Reporter arg3)
 			throws IOException {
 		// TODO Auto-generated method stub
